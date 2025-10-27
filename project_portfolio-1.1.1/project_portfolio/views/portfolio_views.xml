@@ -1,0 +1,104 @@
+<!-- project_portfolio/views/portfolio_views.xml -->
+<odoo>
+    <record id="view_portfolio_form" model="ir.ui.view">
+        <field name="name">project.portfolio.form</field>
+        <field name="model">project.portfolio</field>
+        <field name="arch" type="xml">
+            <form string="Portfolio">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="department_id" required="1"/>
+                        <field name="leader_id"/>
+                        <field name="allow_cross_visibility"/>
+                        <field name="manager_ids" widget="many2many_tags"/>
+                        <field name="project_ids">
+                            <tree editable="bottom" delete="false" create="false">
+                                <field name="name"/>
+                                <field name="progress" widget="progressbar" options="{'color': 'success'}"/> 
+                                <button name="action_open_project_form" type="object" icon="fa-external-link" string="" title="Open Project"/>
+                                <button name="action_remove_from_portfolio" type="object" icon="fa-times" string="" title="Remove from Portfolio"/>
+                            </tree>
+                        </field>
+                        <button name="action_add_project" type="object" string="Add Project"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_portfolio_project_line_form" model="ir.ui.view">
+        <field name="name">portfolio.project.line.form</field>
+        <field name="model">portfolio.project.line</field>
+        <field name="arch" type="xml">
+            <form string="Add Project to Portfolio">
+                <group>
+                    <field name="portfolio_id" readonly="1"/>
+                    <field name="project_id"/>
+                </group>
+                <footer>
+                    <button string="Add" type="object" name="action_add_to_portfolio" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_portfolio_tree" model="ir.ui.view">
+        <field name="name">project.portfolio.tree</field>
+        <field name="model">project.portfolio</field>
+        <field name="arch" type="xml">
+            <tree string="Portfolios">
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="project_count"/>
+                <button name="action_add_project"
+                        type="object"
+                        class="btn btn-primary btn-sm"
+                        string="Add Project"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_portfolio_kanban" model="ir.ui.view">
+        <field name="name">project.portfolio.kanban</field>
+        <field name="model">project.portfolio</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="project_count"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="name"/></strong><br/><br/>
+                            <span><field name="department_id"/></span><br/>
+                            <hr/>
+                            <div class="o_kanban_record_bottom mt-3">
+                                <div class="oe_kanban_bottom_left">
+                                    <span>Projects: <field name="project_count"/></span>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <button name="action_add_project"
+                                            type="object"
+                                            class="btn btn-primary"
+                                            string="Add Project"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_portfolio" model="ir.actions.act_window">
+        <field name="name">Portfolios</field>
+        <field name="res_model">project.portfolio</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <menuitem id="menu_portfolio_root" name="Portfolios" parent="project.menu_main_pm"/>
+    <menuitem id="menu_portfolio" name="All Portfolios" parent="menu_portfolio_root" action="action_portfolio"/>
+</odoo>
